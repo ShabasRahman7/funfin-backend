@@ -1,6 +1,7 @@
 from datetime import datetime
 from enum import Enum
 
+import pymongo
 from pydantic import ConfigDict, EmailStr, Field
 
 from beanie import Document, Insert, Replace, Save, SaveChanges, Update, before_event
@@ -30,7 +31,14 @@ class Admin(Document):
     class Settings:
         name = "admins"
         use_state_management = True
-        indexes = ["email"]
+        indexes = [
+            pymongo.IndexModel(
+                [("email", pymongo.ASCENDING)],
+                name="email_1",
+                unique=True,
+                background=True,
+            ),
+        ]
 
     @before_event(Insert)
     async def _hash_on_insert(self) -> None:

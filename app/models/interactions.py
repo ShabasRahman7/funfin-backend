@@ -1,6 +1,7 @@
 from datetime import datetime
 from enum import Enum
 
+import pymongo
 from pydantic import ConfigDict, Field
 
 from beanie import Document, PydanticObjectId
@@ -25,7 +26,12 @@ class Enrollment(Document):
     class Settings:
         name = "enrollments"
         indexes = [
-            [("userId", 1), ("courseId", 1)],
+            pymongo.IndexModel(
+                [("userId", pymongo.ASCENDING), ("courseId", pymongo.ASCENDING)],
+                name="userId_1_courseId_1",
+                unique=True,
+                background=True,
+            ),
         ]
 
 
@@ -43,7 +49,12 @@ class Review(Document):
     class Settings:
         name = "reviews"
         indexes = [
-            [("topicId", 1), ("userId", 1)],
+            pymongo.IndexModel(
+                [("topicId", pymongo.ASCENDING), ("userId", pymongo.ASCENDING)],
+                name="topicId_1_userId_1",
+                unique=True,
+                background=True,
+            ),
         ]
 
 
